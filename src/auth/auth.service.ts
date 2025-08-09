@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { UsersService } from '../user/users.service'
@@ -18,13 +20,15 @@ export class AuthService {
     if (existing) throw new ConflictException('Email already in use')
 
     const hashed = await bcrypt.hash(dto.password, 10)
-    const user: UserDocument = await this.usersService.create({
+    const user = await this.usersService.create({
       email: dto.email,
       username: dto.username,
       password: hashed,
     })
 
-    return this.signToken(user.id, user.email)
+    console.log('buildAuthResponse user:', user)
+
+    return this.buildAuthResponse(user)
   }
 
   async login(dto: LoginDto) {
@@ -34,13 +38,23 @@ export class AuthService {
     const isMatch = await bcrypt.compare(dto.password, user.password)
     if (!isMatch) throw new UnauthorizedException('Invalid credentials')
 
-    return this.signToken(user.id, user.email)
+    return this.buildAuthResponse(user)
   }
 
-  private async signToken(userId: string, email: string) {
+  private async signToken(userId: string, email: string): Promise<string> {
     const payload = { sub: userId, email }
+    return this.jwtService.signAsync(payload)
+  }
+
+  private async buildAuthResponse(user: UserDocument) {
+    const token = await this.signToken(user.id, user.email)
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+      },
+      token,
     }
   }
 }
