@@ -26,8 +26,6 @@ export class AuthService {
       password: hashed,
     })
 
-    console.log('buildAuthResponse user:', user)
-
     return this.buildAuthResponse(user)
   }
 
