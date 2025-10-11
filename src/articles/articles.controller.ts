@@ -21,4 +21,9 @@ export class ArticlesController {
   async findOne(@Param('id') id: string): Promise<any> {
     return this.articlesService.findOne(id)
   }
+
+  @Get('author/:authorId')
+  async findByAuthor(@Param('authorId') authorId: string): Promise<any[]> {
+    return this.articlesService.findByAuthor(authorId)
+  }
 }

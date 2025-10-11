@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module'
 import * as dotenv from 'dotenv'
 import { ArticlesModule } from './articles/articles.module'
 import { UploadModule } from './upload/upload.module'
+import { CommentsModule } from './comments/comments.module'
 
 dotenv.config()
 
@@ -23,6 +24,7 @@ console.log('DB config:', {
     AuthModule,
     ArticlesModule,
     UploadModule,
+    CommentsModule,
   ],
 })
 export class AppModule {}

@@ -20,4 +20,8 @@ export class ArticlesService {
   async findOne(id: string): Promise<Article | null> {
     return this.articleModel.findById(id).exec()
   }
+
+  async findByAuthor(authorId: string): Promise<Article[]> {
+    return this.articleModel.find({ author: authorId }).exec()
+  }
 }
